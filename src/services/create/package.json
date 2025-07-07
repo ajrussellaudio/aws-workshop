@@ -1,0 +1,13 @@
+
+{
+  "name": "create",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "build": "esbuild handler.ts --bundle --platform=node --target=node16 --outfile=dist/handler.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
