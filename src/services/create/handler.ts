@@ -17,6 +17,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     TableName: getenv("DYNAMODB_TABLE_NAME"),
     Item: {
       id: uuidv4(),
+      gsi_1_pk: "item",
       content: data.content,
       createdAt: new Date().toISOString(),
     },

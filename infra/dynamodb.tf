@@ -8,4 +8,15 @@ resource "aws_dynamodb_table" "items" {
     name = "id"
     type = "S"
   }
+
+  attribute {
+    name = "gsi_1_pk"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "gsi_1"
+    hash_key           = "gsi_1_pk"
+    projection_type    = "ALL"
+  }
 }
