@@ -1,13 +1,20 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
+import getenv from "getenv";
 
 const dynamoDb = new DynamoDB.DocumentClient();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
+  if (!event.pathParameters || !event.pathParameters.id) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Missing path parameter: id" }),
+    };
+  }
   const params = {
-    TableName: process.env.DYNAMODB_TABLE_NAME,
+    TableName: getenv("DYNAMODB_TABLE_NAME"),
     Key: {
-      id: event.pathParameters?.id,
+      id: event.pathParameters.id,
     },
   };
 
@@ -18,9 +25,10 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       body: JSON.stringify(result.Item),
     };
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ error: message }),
     };
   }
 };
