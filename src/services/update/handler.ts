@@ -1,5 +1,5 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
-import { DynamoDB } from 'aws-sdk';
+import { APIGatewayProxyHandler } from "aws-lambda";
+import { DynamoDB } from "aws-sdk";
 
 const dynamoDb = new DynamoDB.DocumentClient();
 
@@ -10,11 +10,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     Key: {
       id: event.pathParameters.id,
     },
-    UpdateExpression: 'SET content = :content',
+    UpdateExpression: "SET content = :content",
     ExpressionAttributeValues: {
-      ':content': data.content,
+      ":content": data.content,
     },
-    ReturnValues: 'ALL_NEW',
+    ReturnValues: "ALL_NEW",
   };
 
   try {

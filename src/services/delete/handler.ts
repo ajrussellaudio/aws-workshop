@@ -1,5 +1,5 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
-import { DynamoDB } from 'aws-sdk';
+import { APIGatewayProxyHandler } from "aws-lambda";
+import { DynamoDB } from "aws-sdk";
 
 const dynamoDb = new DynamoDB.DocumentClient();
 
@@ -15,7 +15,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     await dynamoDb.delete(params).promise();
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Item deleted successfully' }),
+      body: JSON.stringify({ message: "Item deleted successfully" }),
     };
   } catch (error) {
     return {

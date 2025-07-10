@@ -4,14 +4,21 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "npm run build --prefix create && npm run build --prefix read && npm run build --prefix update && npm run build --prefix delete"
+        "build": "npm run build --prefix create && npm run build --prefix read && npm run build --prefix update && npm run build --prefix delete",
+        "lint": "eslint . --ext .ts --fix"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "devDependencies": {
         "@types/node": "^24.0.10",
-        "esbuild": "^0.14.25"
+        "@typescript-eslint/eslint-plugin": "^8.36.0",
+        "@typescript-eslint/parser": "^8.36.0",
+        "esbuild": "^0.14.25",
+        "eslint": "^9.30.1",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-prettier": "^5.5.1",
+        "prettier": "^3.6.2"
     },
     "dependencies": {
         "@types/aws-lambda": "^8.10.150",
