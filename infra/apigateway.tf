@@ -11,6 +11,7 @@ resource "aws_api_gateway_authorizer" "token_authorizer" {
   authorizer_credentials = aws_iam_role.api_gateway_invoke_lambda_role.arn
   type                   = "TOKEN"
   identity_source        = "method.request.header.Authorization"
+  authorizer_result_ttl_in_seconds = 0
 }
 
 
