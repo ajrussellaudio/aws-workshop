@@ -4,6 +4,16 @@ resource "aws_api_gateway_rest_api" "api" {
   description = "API for CRUD operations"
 }
 
+resource "aws_api_gateway_authorizer" "token_authorizer" {
+  name                   = "token_authorizer"
+  rest_api_id            = aws_api_gateway_rest_api.api.id
+  authorizer_uri         = aws_lambda_function.authorizer.invoke_arn
+  authorizer_credentials = aws_iam_role.api_gateway_invoke_lambda_role.arn
+  type                   = "TOKEN"
+  identity_source        = "method.request.header.Authorization"
+}
+
+
 resource "aws_api_gateway_resource" "items" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   parent_id   = aws_api_gateway_rest_api.api.root_resource_id
@@ -20,7 +30,8 @@ resource "aws_api_gateway_method" "create_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.items.id
   http_method   = "POST"
-  authorization = "NONE"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.token_authorizer.id
 }
 
 resource "aws_api_gateway_integration" "create_item_integration" {
@@ -36,7 +47,8 @@ resource "aws_api_gateway_method" "read_all_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.items.id
   http_method   = "GET"
-  authorization = "NONE"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.token_authorizer.id
 }
 
 resource "aws_api_gateway_integration" "read_all_item_integration" {
@@ -52,7 +64,8 @@ resource "aws_api_gateway_method" "read_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.item.id
   http_method   = "GET"
-  authorization = "NONE"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.token_authorizer.id
 }
 
 resource "aws_api_gateway_integration" "read_item_integration" {
@@ -68,7 +81,8 @@ resource "aws_api_gateway_method" "update_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.item.id
   http_method   = "PUT"
-  authorization = "NONE"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.token_authorizer.id
 }
 
 resource "aws_api_gateway_integration" "update_item_integration" {
@@ -84,7 +98,8 @@ resource "aws_api_gateway_method" "delete_item_method" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.item.id
   http_method   = "DELETE"
-  authorization = "NONE"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.token_authorizer.id
 }
 
 resource "aws_api_gateway_integration" "delete_item_integration" {
@@ -106,6 +121,7 @@ resource "aws_api_gateway_deployment" "api_deployment" {
       aws_api_gateway_integration.read_item_integration,
       aws_api_gateway_integration.update_item_integration,
       aws_api_gateway_integration.delete_item_integration,
+      aws_api_gateway_authorizer.token_authorizer,
     ]))
   }
 
@@ -119,6 +135,7 @@ resource "aws_api_gateway_deployment" "api_deployment" {
     aws_api_gateway_integration.read_item_integration,
     aws_api_gateway_integration.update_item_integration,
     aws_api_gateway_integration.delete_item_integration,
+    aws_api_gateway_authorizer.token_authorizer,
   ]
 }
 

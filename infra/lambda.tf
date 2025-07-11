@@ -130,3 +130,26 @@ resource "aws_lambda_permission" "apigw_lambda_delete" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/${aws_api_gateway_stage.api_stage.stage_name}/${aws_api_gateway_method.delete_item_method.http_method}${aws_api_gateway_resource.item.path}"
 }
+
+resource "aws_lambda_function" "authorizer" {
+  function_name = "aws-workshop-authorizer"
+  role          = aws_iam_role.lambda_exec_role.arn
+  handler       = "authorizer.handler"
+  runtime       = "nodejs16.x"
+  filename      = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
+  environment {
+    variables = {
+      AUTH_TOKEN = var.auth_token
+    }
+  }
+}
+
+resource "aws_lambda_permission" "apigw_lambda_authorizer" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.authorizer.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/authorizers/${aws_api_gateway_authorizer.token_authorizer.id}"
+}
