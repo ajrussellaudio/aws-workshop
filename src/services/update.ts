@@ -18,15 +18,34 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     };
   }
   const data = JSON.parse(event.body);
+
+  const updateExpression: string[] = [];
+  const expressionAttributeValues: { [key: string]: any } = {};
+
+  if (data.album) {
+    updateExpression.push("album = :album");
+    expressionAttributeValues[":album"] = data.album;
+  }
+
+  if (data.artist) {
+    updateExpression.push("artist = :artist");
+    expressionAttributeValues[":artist"] = data.artist;
+  }
+
+  if (updateExpression.length === 0) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "No fields to update" }),
+    };
+  }
+
   const params = {
     TableName: getenv("DYNAMODB_TABLE_NAME"),
     Key: {
       id: event.pathParameters.id,
     },
-    UpdateExpression: "SET content = :content",
-    ExpressionAttributeValues: {
-      ":content": data.content,
-    },
+    UpdateExpression: `SET ${updateExpression.join(", ")}`,
+    ExpressionAttributeValues: expressionAttributeValues,
     ReturnValues: "ALL_NEW",
   };
 

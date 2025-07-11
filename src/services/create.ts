@@ -13,12 +13,21 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     };
   }
   const data = JSON.parse(event.body);
+
+  if (!data.album || !data.artist) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Missing album or artist in request body" }),
+    };
+  }
+
   const params = {
     TableName: getenv("DYNAMODB_TABLE_NAME"),
     Item: {
       id: uuidv4(),
       gsi_1_pk: "item",
-      content: data.content,
+      album: data.album,
+      artist: data.artist,
       createdAt: new Date().toISOString(),
     },
   };
