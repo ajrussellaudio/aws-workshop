@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "npm run build --prefix create && npm run build --prefix read && npm run build --prefix update && npm run build --prefix delete",
+        "build": "esbuild ./*.ts --bundle --platform=node --target=node16 --outdir=dist --external:aws-sdk",
         "lint": "eslint . --ext .ts --fix"
     },
     "keywords": [],
@@ -14,7 +14,7 @@
         "@types/node": "^24.0.10",
         "@typescript-eslint/eslint-plugin": "^8.36.0",
         "@typescript-eslint/parser": "^8.36.0",
-        "esbuild": "^0.14.25",
+        "esbuild": "^0.25.6",
         "eslint": "^9.30.1",
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-prettier": "^5.5.1",
