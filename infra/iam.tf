@@ -24,10 +24,13 @@ resource "aws_iam_policy" "dynamodb_access_policy" {
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
         "dynamodb:DeleteItem",
-        "dynamodb:Scan"
+        "dynamodb:Query"
       ]
       Effect   = "Allow"
-      Resource = aws_dynamodb_table.items.arn
+      Resource = [
+        aws_dynamodb_table.items.arn,
+        "${aws_dynamodb_table.items.arn}/index/gsi_1"
+      ]
     }]
   })
 }
